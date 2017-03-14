@@ -1,7 +1,5 @@
 # React Query Params
-Easy to use query param support for React.
-
-Write your own route handler component as usual. Have it extend ReactQueryParams and you're set. Now your component has query param support.
+Easy to use query param support for React and React Router (4.0).
 
 Plays super nice with React:
 
@@ -42,12 +40,14 @@ Extend your component class (ex. App.jsx)
 
 	const value = this.queryParams.food;
 
-### 2. Set a query param values
+### 2. Set query param values
 Semantically similar to React's setState():
 
 	this.setQueryParams({ lunch: 'nutella' });
 
-When you set query param values an update is triggered just like setState(). (setQueryParams() does not have or need an asynchronous variation.)
+When you set query param values an update is triggered just like setState().
+
+setQueryParams() does not have or need an asynchronous variation.
 
 ### Optional - Define defaultQueryParams
 
