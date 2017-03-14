@@ -22,7 +22,7 @@ jeffbutsch@gmail.com
 React Router 4.0.0+
 
 
-##Installation
+## Installation
 Install using yarn or npm:
 
 	yarn add react-query-params 
