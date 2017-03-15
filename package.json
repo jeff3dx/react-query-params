@@ -24,7 +24,7 @@
   "author": "Jeff Butsch <jeffbutsch@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git@github.com:jeff3dx/react-query-params.git"
+    "url": "git+ssh://git@github.com/jeff3dx/react-query-params.git"
   },
   "license": "MIT",
   "devDependencies": {
@@ -56,5 +56,9 @@
   },
   "peerDependencies": {
     "react": "^15.3.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/jeff3dx/react-query-params/issues"
+  },
+  "homepage": "https://github.com/jeff3dx/react-query-params#readme"
 }
