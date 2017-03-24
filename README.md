@@ -1,5 +1,5 @@
 # React Query Params
-Easy to use query param support for React and React Router 4.
+Easy to use query param support for React.
 
 Plays super nice with React:
 
@@ -7,7 +7,7 @@ Plays super nice with React:
 - Get/set arrays and objects
 - Default values and clean URL's
 - Opt in to browser history
-- Read incoming query params from componentWillReceiveProps()
+- Can read next query params from componentWillReceiveProps()
 
 ## Support
 jeffbutsch@gmail.com
@@ -17,14 +17,10 @@ twitter [@jeff3dx](https://twitter.com/jeff3dx)
 [Submit issue on github](https://github.com/jeff3dx/react-query-param-support/issues)
 
 
-## Requirements
-React Router 4.0.0+
-
-
 ## Installation
 Install using yarn or npm:
 
-	yarn add react-query-params 
+	yarn add react-query-params
 
 
 ## Setup
@@ -44,9 +40,9 @@ ReactQueryParams is the base class (ex. App.jsx)
 ### Set
 Semantically similar to React's setState():
 
-	this.setQueryParams({ 
+	this.setQueryParams({
 		lunch: 'nutella',
-		dinner: 'pie' 
+		dinner: 'pie'
 	});
 
 When you set query param values an update is triggered just like setState().
