@@ -2,6 +2,10 @@ import { Component } from 'react';
 import { isNil, isObject, startsWith, endsWith } from 'lodash';
 import { createBrowserHistory } from 'history';
 
+function isUndefined(value) {
+  return value === undefined;
+}
+
 /**
  * React Query Params
  * Support: https://github.com/jeff3dx/react-query-params
@@ -43,7 +47,7 @@ export default class ReactQueryParams extends Component {
    */
   _queryParamToObject(value) {
     let result = value;
-    if (typeof value === 'string' && ((value.startsWith('[') && value.endsWith(']')) || (value.startsWith('{') && value.startsWith('}') ))) {
+    if (typeof value === 'string' && ((startsWith(value, '[') && endsWith(value, ']')) || (startsWith(value, '{') && endsWith(value, '}') ))) {
       try {
         result = JSON.parse(value);
       } catch(ex) {

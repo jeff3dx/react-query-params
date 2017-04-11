@@ -67,7 +67,7 @@ Semantically similar to defaultProps.
 ## Array and Object Values
 
 ### Set
-React-query-params does not use the repeating param approach for representing arrays on the URL, but instead stringifies arrays for URL storage. Saves characters, elements can be objects, marvellous in every way.
+React-query-params does not use the repeating param approach for representing arrays on the URL, but instead stringifies arrays for URL storage. Saves characters, elements can be objects, marvelous in every way.
 
 	const food = ['bacon', 'nutella'];
 	this.setQueryParams({ lunch: food });
