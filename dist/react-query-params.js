@@ -34,12 +34,16 @@ function isUndefined(value) {
 var ReactQueryParams = function (_Component) {
   _inherits(ReactQueryParams, _Component);
 
-  function ReactQueryParams() {
+  function ReactQueryParams(router) {
     _classCallCheck(this, ReactQueryParams);
 
     var _this = _possibleConstructorReturn(this, (ReactQueryParams.__proto__ || Object.getPrototypeOf(ReactQueryParams)).call(this));
 
-    _this.history = (0, _history.createBrowserHistory)();
+    if (_this.context && _this.context.router) {
+      _this.history = _this.context.router;
+    } else {
+      _this.history = (0, _history.createBrowserHistory)();
+    }
     return _this;
   }
 
@@ -80,7 +84,7 @@ var ReactQueryParams = function (_Component) {
 
 
     /**
-     * If query param value looks like an object try to parse it
+     * If query param string is object-like try to parse it
      */
     value: function _queryParamToObject(value) {
       var result = value;
@@ -95,10 +99,49 @@ var ReactQueryParams = function (_Component) {
       }
       return result;
     }
+  }, {
+    key: '_resolveSearchParams',
+    value: function _resolveSearchParams() {
+      var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
+
+      var searchParams = {};
+
+      if (source.location.query) {
+        searchParams = source.location.query;
+      } else if (source.location.search) {
+        var urlSearch = new URLSearchParams(source.location.search);
+
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = urlSearch[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var pair = _step.value;
+
+            searchParams[pair[0]] = pair[1];
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+      return searchParams;
+    }
 
     /**
-     * Holds the current calculated query params. Optimizes the case where the getter is accessed multiple times before the next render cycle.
-     * Query params are lazy calculated if this variable is null.
+     * Returns a map of all query params including default values. Params that match
+     * the default value do not show up in the URL but are still available here.
      */
 
   }, {
@@ -111,10 +154,11 @@ var ReactQueryParams = function (_Component) {
      * @param {object} props - Optional. An alternate props object to use instead of the current props
      */
     value: function getQueryParam(key) {
-      var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.props;
+      var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window;
 
       var defaults = this.defaultQueryParams || {};
-      var result = isUndefined(props.location.query[key]) ? props.location.query[key] : defaults[key];
+      var searchParams = this._resolveSearchParams(source);
+      var result = isUndefined(searchParams[key]) ? searchParams[key] : defaults[key];
       result = this._boolify(result);
       result = this._queryParamToObject(result);
       return result;
@@ -124,15 +168,16 @@ var ReactQueryParams = function (_Component) {
 
 
     /**
-     * Set query param values. Merges changes, similar to setState().
-     * Params that match the default value are removed from the URL to keep it clean, but the value is still available as normal.
+     * Set query param values. Merges changes similar to setState().
      * @param {object} params - Object of key:values to overlay on current query param values.
      * @param {boolean} addHistory - true = add browser history, default false.
      */
     value: function setQueryParams(params) {
       var addHistory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      var nextQueryParams = _extends({}, this.props.location.query, params);
+      var searchParams = this._resolveSearchParams();
+
+      var nextQueryParams = _extends({}, searchParams, params);
       var defaults = this.defaultQueryParams || {};
 
       Object.keys(nextQueryParams).forEach(function (key) {
@@ -151,70 +196,27 @@ var ReactQueryParams = function (_Component) {
         }
       });
 
-      var values = Object.keys(nextQueryParams).map(function (key) {
+      var search = '?' + Object.keys(nextQueryParams).map(function (key) {
         return key + '=' + nextQueryParams[key];
-      });
-      var search = '?' + values.join('&');
+      }).join('&');
 
       if (addHistory) {
-        this.history.push({
-          path: window.location.pathname,
-          search: search
-        });
+        this.history.push({ pathname: window.location.pathname, search: search });
       } else {
-        this.history.replace({
-          pathname: window.location.pathname,
-          search: search
-        });
+        this.history.replace({ pathname: window.location.pathname, search: search });
       }
 
       // Clear the cache
       this._queryParamsCache = null;
+      this.forceUpdate();
     }
   }, {
     key: 'queryParams',
-
-
-    /**
-     * Returns a map of query params with defaults resolved.
-     */
     get: function get() {
       var _this2 = this;
 
       if ((0, _lodash.isNil)(this._queryParamsCache)) {
-
-        var searchParams = {};
-        if (this.props.location.query) {
-          // react-router 3.0
-          searchParams = this.props.location.query;
-        } else if (this.props.location.search) {
-          // react-router 4.0
-          var urlSearch = new URLSearchParams(this.props.location.search);
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
-
-          try {
-            for (var _iterator = urlSearch[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var pair = _step.value;
-
-              searchParams[pair[0]] = pair[1];
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
-          }
-        }
+        var searchParams = this._resolveSearchParams();
 
         var defaults = this.defaultQueryParams || {};
         var all = _extends({}, defaults, searchParams);
