@@ -11,9 +11,13 @@ function isUndefined(value) {
  * Support: https://github.com/jeff3dx/react-query-params
  */
 export default class ReactQueryParams extends Component {
-  constructor() {
+  constructor(router) {
     super();
-    this.history = createBrowserHistory();
+    if(this.context && this.context.router) {
+      this.history = this.context.router;
+    } else {
+      this.history = createBrowserHistory();
+    }
   }
 
   /* Clear the query param cache */
@@ -43,7 +47,7 @@ export default class ReactQueryParams extends Component {
   };
 
   /**
-   * If query param value looks like an object try to parse it
+   * If query param string is object-like try to parse it
    */
   _queryParamToObject(value) {
     let result = value;
@@ -59,29 +63,30 @@ export default class ReactQueryParams extends Component {
     return result;
   }
 
-  /**
-   * Holds the current calculated query params. Optimizes the case where the getter is accessed multiple times before the next render cycle.
-   * Query params are lazy calculated if this variable is null.
-   */
   _queryParamsCache;
 
+  _resolveSearchParams(source = window) {
+    let searchParams = {};
+
+    if (source.location.query) {
+      searchParams = source.location.query;
+    } else if (source.location.search) {
+      const urlSearch = new URLSearchParams(source.location.search);
+
+      for (let pair of urlSearch) {
+        searchParams[pair[0]] = pair[1];
+      }
+    }
+    return searchParams;
+  }
+
   /**
-   * Returns a map of query params with defaults resolved.
+   * Returns a map of all query params including default values. Params that match
+   * the default value do not show up in the URL but are still available here.
    */
   get queryParams() {
     if (isNil(this._queryParamsCache)) {
-
-      let searchParams = {};
-      if (this.props.location.query) {
-        // react-router 3.0
-        searchParams = this.props.location.query;
-      } else if (this.props.location.search) {
-        // react-router 4.0
-        const urlSearch = new URLSearchParams(this.props.location.search);
-        for (let pair of urlSearch) {
-          searchParams[pair[0]] = pair[1];
-        }
-      }
+      const searchParams = this._resolveSearchParams();
 
       const defaults = this.defaultQueryParams || {};
       const all = { ...defaults, ...searchParams };
@@ -99,22 +104,24 @@ export default class ReactQueryParams extends Component {
    * @param {string} key - The query param key
    * @param {object} props - Optional. An alternate props object to use instead of the current props
    */
-  getQueryParam(key, props = this.props) {
+  getQueryParam(key, source = window) {
     const defaults = this.defaultQueryParams || {};
-    let result = isUndefined(props.location.query[key]) ? props.location.query[key] : defaults[key];
+    const searchParams = this._resolveSearchParams(source);
+    let result = isUndefined(searchParams[key]) ? searchParams[key] : defaults[key];
     result = this._boolify(result);
     result = this._queryParamToObject(result);
     return result;
   };
 
   /**
-   * Set query param values. Merges changes, similar to setState().
-   * Params that match the default value are removed from the URL to keep it clean, but the value is still available as normal.
+   * Set query param values. Merges changes similar to setState().
    * @param {object} params - Object of key:values to overlay on current query param values.
    * @param {boolean} addHistory - true = add browser history, default false.
    */
   setQueryParams(params, addHistory = false) {
-    const nextQueryParams = { ...this.props.location.query, ...params };
+    const searchParams = this._resolveSearchParams();
+
+    const nextQueryParams = { ...searchParams, ...params };
     const defaults = this.defaultQueryParams || {};
 
     Object.keys(nextQueryParams).forEach(key => {
@@ -133,22 +140,16 @@ export default class ReactQueryParams extends Component {
       }
     });
 
-    const values = Object.keys(nextQueryParams).map(key => `${key}=${nextQueryParams[key]}`);
-    const search = `?${values.join('&')}`;
+    const search = '?' + (Object.keys(nextQueryParams).map(key => `${key}=${nextQueryParams[key]}`).join('&'));
 
     if (addHistory) {
-      this.history.push({
-        path: window.location.pathname,
-        search
-      });
+      this.history.push({ pathname: window.location.pathname, search });
     } else {
-      this.history.replace({
-        pathname: window.location.pathname,
-        search
-      });
+      this.history.replace({ pathname: window.location.pathname, search });
     }
 
     // Clear the cache
     this._queryParamsCache = null;
+    this.forceUpdate();
   };
 }

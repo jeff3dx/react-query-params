@@ -5,7 +5,7 @@ Plays super nice with React:
 
 - Semantically similar to setState()
 - Get/set arrays and objects
-- Default values and clean URL's
+- Clean URL's with default values
 - Opt in to browser history
 - Can read next query params from componentWillReceiveProps()
 
@@ -35,7 +35,7 @@ ReactQueryParams is the base class (ex. App.jsx)
 ## Usage
 ### Get
 
-	const value = this.queryParams.food;
+	const value = this.queryParams.lunch;
 
 ### Set
 Semantically similar to React's setState():
@@ -79,9 +79,10 @@ Set the value to an empty array []. Don't set to blank. React-query-params detec
 	this.setQueryParams({ lunch: [] });
 
 ### Default value as array
-The only time you have to convert an array or object to a JSON string yourself is when you set a defaultQueryParams value.
+ReactQueryParams as built in support for object and array values. Howevber there is one case, and only one case, where you need to stringify the value yourself.
+When setting values in defaultQueryParams you must stringify objects and arrays yourself. (Not necessary for bool values.)
 
-Correct syntax - stringify the value yourself only when setting a default value.
+Correct syntax - stringify object or array value yourself only when setting a default value:
 
 	defaultQueryParams = {
 		lunch: '["bacon","nutella"]'
