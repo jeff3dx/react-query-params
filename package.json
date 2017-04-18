@@ -1,6 +1,6 @@
 {
   "name": "react-query-params",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Easy to use query param support for React",
   "main": "dist/react-query-params.js",
   "scripts": {

@@ -10,25 +10,22 @@ Plays super nice with React:
 - Can read next query params from componentWillReceiveProps()
 
 ## Support
-jeffbutsch@gmail.com
+Email [jeffbutsch@gmail.com](mailto:jeffbutsch@gmail.com?subject=I%20love%20react-query-params)
 
-twitter [@jeff3dx](https://twitter.com/jeff3dx)
-
-[Submit issue on github](https://github.com/jeff3dx/react-query-param-support/issues)
+Submit issue [on github](https://github.com/jeff3dx/react-query-param-support/issues)
 
 
 ## Installation
-Install using yarn or npm:
+Install with npm (or yarn):
 
-	yarn add react-query-params
-
+	npm install react-query-params
 
 ## Setup
 ReactQueryParams is the base class (ex. App.jsx)
 
 	import ReactQueryParams from 'react-query-params';
 
-	export default class App extends ReactQueryParams {
+	export default class MyApp extends ReactQueryParams {
 	  /* Your code */
 	}
 
@@ -58,7 +55,7 @@ Semantically similar to defaultProps.
 
 	import ReactQueryParams from 'react-query-params';
 
-	export default class MyClass extends ReactQueryParams {
+	export default class MyApp extends ReactQueryParams {
 	    defaultQueryParams = {
 	        lunch: 'bacon'
 	    }
@@ -79,8 +76,8 @@ Set the value to an empty array []. Don't set to blank. React-query-params detec
 	this.setQueryParams({ lunch: [] });
 
 ### Default value as array
-ReactQueryParams as built in support for object and array values. Howevber there is one case, and only one case, where you need to stringify the value yourself.
-When setting values in defaultQueryParams you must stringify objects and arrays yourself. (Not necessary for bool values.)
+ReactQueryParams has built in support for object and array values. However, there is one, and only one, case where you need to stringify the value yourself.
+When setting values in defaultQueryParams you must stringify objects and arrays yourself.
 
 Correct syntax - stringify object or array value yourself only when setting a default value:
 
