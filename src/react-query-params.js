@@ -1,19 +1,72 @@
-import { Component } from 'react';
-import { isNil, isObject, startsWith, endsWith } from 'lodash';
-import { createBrowserHistory } from 'history';
+
+/*
+  Copyright (c) 2017 Jeff Butsch
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
+import { Component } from "react";
+import { createBrowserHistory } from "history";
 
 function isUndefined(value) {
   return value === undefined;
 }
 
+function isNil(value) {
+  // eslint-disable-next-line
+  return value == null;
+}
+
+function isObject(value) {
+  const type = typeof value;
+  // eslint-disable-next-line
+  return value != null && (type == "object" || type == "function");
+}
+
+function startsWith(value, searchString, position) {
+  position = position || 0;
+  return value.substr(position, searchString.length) === searchString;
+}
+
+function endsWith(value, searchString, position) {
+  const subjectString = value.toString();
+  if (
+    typeof position !== "number" ||
+    !isFinite(position) ||
+    Math.floor(position) !== position ||
+    position > subjectString.length
+  ) {
+    position = subjectString.length;
+  }
+  position -= searchString.length;
+  const lastIndex = subjectString.lastIndexOf(searchString, position);
+  return lastIndex !== -1 && lastIndex === position;
+}
+
 /**
- * React Query Params
+ * React Query Params Component base class
  * Support: https://github.com/jeff3dx/react-query-params
  */
 export default class ReactQueryParams extends Component {
   constructor(router) {
     super();
-    if(this.context && this.context.router) {
+    if (this.context && this.context.router) {
       this.history = this.context.router;
     } else {
       this.history = createBrowserHistory();
@@ -35,26 +88,30 @@ export default class ReactQueryParams extends Component {
    * @param {string} value - the query param string value
    */
   _boolify(value) {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       const value2 = value.toLowerCase().trim();
-      if (value2 === 'true') {
+      if (value2 === "true") {
         return true;
-      } else if (value2 === 'false') {
+      } else if (value2 === "false") {
         return false;
       }
     }
     return value;
-  };
+  }
 
   /**
    * If query param string is object-like try to parse it
    */
   _queryParamToObject(value) {
     let result = value;
-    if (typeof value === 'string' && ((startsWith(value, '[') && endsWith(value, ']')) || (startsWith(value, '{') && endsWith(value, '}') ))) {
+    if (
+      typeof value === "string" &&
+      ((startsWith(value, "[") && endsWith(value, "]")) ||
+        (startsWith(value, "{") && endsWith(value, "}")))
+    ) {
       try {
         result = JSON.parse(value);
-      } catch(ex) {
+      } catch (ex) {
         console.error(ex);
         // Can't parse so fall back to verbatim value
         result = value;
@@ -107,11 +164,13 @@ export default class ReactQueryParams extends Component {
   getQueryParam(key, source = window) {
     const defaults = this.defaultQueryParams || {};
     const searchParams = this._resolveSearchParams(source);
-    let result = isUndefined(searchParams[key]) ? searchParams[key] : defaults[key];
+    let result = isUndefined(searchParams[key])
+      ? searchParams[key]
+      : defaults[key];
     result = this._boolify(result);
     result = this._queryParamToObject(result);
     return result;
-  };
+  }
 
   /**
    * Set query param values. Merges changes similar to setState().
@@ -129,9 +188,12 @@ export default class ReactQueryParams extends Component {
       if (isObject(nextQueryParams[key])) {
         try {
           nextQueryParams[key] = JSON.stringify(nextQueryParams[key]);
-        } catch(ex) {
-          console.log('react-query-params -- Failed to serialize queryParam ' + key, ex);
-          nextQueryParams[key] = '';
+        } catch (ex) {
+          console.log(
+            "react-query-params -- Failed to serialize queryParam " + key,
+            ex
+          );
+          nextQueryParams[key] = "";
         }
       }
       // Remove params that match the default
@@ -140,7 +202,11 @@ export default class ReactQueryParams extends Component {
       }
     });
 
-    const search = '?' + (Object.keys(nextQueryParams).map(key => `${key}=${nextQueryParams[key]}`).join('&'));
+    const search =
+      "?" +
+      Object.keys(nextQueryParams)
+        .map(key => `${key}=${nextQueryParams[key]}`)
+        .join("&");
 
     if (addHistory) {
       this.history.push({ pathname: window.location.pathname, search });
@@ -150,6 +216,7 @@ export default class ReactQueryParams extends Component {
 
     // Clear the cache
     this._queryParamsCache = null;
+
     this.forceUpdate();
-  };
+  }
 }

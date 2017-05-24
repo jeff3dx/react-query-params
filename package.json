@@ -1,6 +1,6 @@
 {
   "name": "react-query-params",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Easy to use query param support for React",
   "main": "dist/react-query-params.js",
   "scripts": {
@@ -10,16 +10,18 @@
     "dev": "webpack-dev-server"
   },
   "keywords": [
-    "query",
-    "params",
-    "query-params",
-    "react-query-params",
-    "parameters",
     "component",
+    "parameters",
+    "params",
+    "query string",
+    "query",
+    "query-params",
     "react",
-    "router",
+    "react-query-params",
     "react-router",
-    "react-component"
+    "router",
+    "search string",
+    "url"
   ],
   "author": "Jeff Butsch <jeffbutsch@gmail.com>",
   "repository": {
@@ -50,9 +52,7 @@
     "webpack-dev-server": "^1.16.0"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "history": "^4.6.0",
-    "lodash": "^4.17.4"
+    "history": "^4.6.0"
   },
   "peerDependencies": {
     "react": "^15.3.0"

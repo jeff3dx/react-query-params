@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -10,11 +10,32 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _react = require('react');
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+/*
+  Copyright (c) 2017 Jeff Butsch
 
-var _lodash = require('lodash');
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-var _history = require('history');
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
+var _react = require("react");
+
+var _history = require("history");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -26,8 +47,34 @@ function isUndefined(value) {
   return value === undefined;
 }
 
+function isNil(value) {
+  // eslint-disable-next-line
+  return value == null;
+}
+
+function isObject(value) {
+  var type = typeof value === "undefined" ? "undefined" : _typeof(value);
+  // eslint-disable-next-line
+  return value != null && (type == "object" || type == "function");
+}
+
+function startsWith(value, searchString, position) {
+  position = position || 0;
+  return value.substr(position, searchString.length) === searchString;
+}
+
+function endsWith(value, searchString, position) {
+  var subjectString = value.toString();
+  if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+    position = subjectString.length;
+  }
+  position -= searchString.length;
+  var lastIndex = subjectString.lastIndexOf(searchString, position);
+  return lastIndex !== -1 && lastIndex === position;
+}
+
 /**
- * React Query Params
+ * React Query Params Component base class
  * Support: https://github.com/jeff3dx/react-query-params
  */
 
@@ -51,12 +98,12 @@ var ReactQueryParams = function (_Component) {
 
 
   _createClass(ReactQueryParams, [{
-    key: 'componentWillUpdate',
+    key: "componentWillUpdate",
     value: function componentWillUpdate() {
       this._queryParamsCache = null;
 
-      if (_get(ReactQueryParams.prototype.__proto__ || Object.getPrototypeOf(ReactQueryParams.prototype), 'componentWillUpdate', this)) {
-        _get(ReactQueryParams.prototype.__proto__ || Object.getPrototypeOf(ReactQueryParams.prototype), 'componentWillUpdate', this).call(this);
+      if (_get(ReactQueryParams.prototype.__proto__ || Object.getPrototypeOf(ReactQueryParams.prototype), "componentWillUpdate", this)) {
+        _get(ReactQueryParams.prototype.__proto__ || Object.getPrototypeOf(ReactQueryParams.prototype), "componentWillUpdate", this).call(this);
       }
     }
 
@@ -67,28 +114,28 @@ var ReactQueryParams = function (_Component) {
      */
 
   }, {
-    key: '_boolify',
+    key: "_boolify",
     value: function _boolify(value) {
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         var value2 = value.toLowerCase().trim();
-        if (value2 === 'true') {
+        if (value2 === "true") {
           return true;
-        } else if (value2 === 'false') {
+        } else if (value2 === "false") {
           return false;
         }
       }
       return value;
     }
-  }, {
-    key: '_queryParamToObject',
-
 
     /**
      * If query param string is object-like try to parse it
      */
+
+  }, {
+    key: "_queryParamToObject",
     value: function _queryParamToObject(value) {
       var result = value;
-      if (typeof value === 'string' && ((0, _lodash.startsWith)(value, '[') && (0, _lodash.endsWith)(value, ']') || (0, _lodash.startsWith)(value, '{') && (0, _lodash.endsWith)(value, '}'))) {
+      if (typeof value === "string" && (startsWith(value, "[") && endsWith(value, "]") || startsWith(value, "{") && endsWith(value, "}"))) {
         try {
           result = JSON.parse(value);
         } catch (ex) {
@@ -100,7 +147,7 @@ var ReactQueryParams = function (_Component) {
       return result;
     }
   }, {
-    key: '_resolveSearchParams',
+    key: "_resolveSearchParams",
     value: function _resolveSearchParams() {
       var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
 
@@ -145,7 +192,7 @@ var ReactQueryParams = function (_Component) {
      */
 
   }, {
-    key: 'getQueryParam',
+    key: "getQueryParam",
 
 
     /**
@@ -163,15 +210,15 @@ var ReactQueryParams = function (_Component) {
       result = this._queryParamToObject(result);
       return result;
     }
-  }, {
-    key: 'setQueryParams',
-
 
     /**
      * Set query param values. Merges changes similar to setState().
      * @param {object} params - Object of key:values to overlay on current query param values.
      * @param {boolean} addHistory - true = add browser history, default false.
      */
+
+  }, {
+    key: "setQueryParams",
     value: function setQueryParams(params) {
       var addHistory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -182,12 +229,12 @@ var ReactQueryParams = function (_Component) {
 
       Object.keys(nextQueryParams).forEach(function (key) {
         // If it's an object value (object, array, etc.) convert it to a string
-        if ((0, _lodash.isObject)(nextQueryParams[key])) {
+        if (isObject(nextQueryParams[key])) {
           try {
             nextQueryParams[key] = JSON.stringify(nextQueryParams[key]);
           } catch (ex) {
-            console.log('react-query-params -- Failed to serialize queryParam ' + key, ex);
-            nextQueryParams[key] = '';
+            console.log("react-query-params -- Failed to serialize queryParam " + key, ex);
+            nextQueryParams[key] = "";
           }
         }
         // Remove params that match the default
@@ -196,9 +243,9 @@ var ReactQueryParams = function (_Component) {
         }
       });
 
-      var search = '?' + Object.keys(nextQueryParams).map(function (key) {
-        return key + '=' + nextQueryParams[key];
-      }).join('&');
+      var search = "?" + Object.keys(nextQueryParams).map(function (key) {
+        return key + "=" + nextQueryParams[key];
+      }).join("&");
 
       if (addHistory) {
         this.history.push({ pathname: window.location.pathname, search: search });
@@ -208,14 +255,15 @@ var ReactQueryParams = function (_Component) {
 
       // Clear the cache
       this._queryParamsCache = null;
+
       this.forceUpdate();
     }
   }, {
-    key: 'queryParams',
+    key: "queryParams",
     get: function get() {
       var _this2 = this;
 
-      if ((0, _lodash.isNil)(this._queryParamsCache)) {
+      if (isNil(this._queryParamsCache)) {
         var searchParams = this._resolveSearchParams();
 
         var defaults = this.defaultQueryParams || {};
