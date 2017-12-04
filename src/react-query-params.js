@@ -131,7 +131,7 @@ export default class ReactQueryParams extends Component {
       const queryString = (source.location.search || '').replace('?', '');
       
       searchParams = queryString.split('&')
-	      .filter(pair => !!pair && ~pair.indexOf('='))
+	.filter(pair => !!pair && ~pair.indexOf('='))
         .map(pair => pair.split('='))
         .reduce((aggregated, current = []) => {  
           aggregated[current[0]] = current[1];
