@@ -128,11 +128,15 @@ export default class ReactQueryParams extends Component {
     if (source.location.query) {
       searchParams = source.location.query;
     } else if (source.location.search) {
-      const urlSearch = new URLSearchParams(source.location.search);
-
-      for (let pair of urlSearch) {
-        searchParams[pair[0]] = pair[1];
-      }
+      const queryString = (source.location.search || '').replace('?', '');
+      
+      searchParams = queryString.split('&')
+	      .filter(pair => !!pair && ~pair.indexOf('='))
+        .map(pair => pair.split('='))
+        .reduce((aggregated, current = []) => {  
+          aggregated[current[0]] = current[1];
+          return aggregated;
+        }, searchParams);
     }
     return searchParams;
   }
