@@ -156,32 +156,18 @@ var ReactQueryParams = function (_Component) {
       if (source.location.query) {
         searchParams = source.location.query;
       } else if (source.location.search) {
-        var urlSearch = new URLSearchParams(source.location.search);
+        var queryString = (source.location.search || '').replace('?', '');
 
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        searchParams = queryString.split('&').filter(function (pair) {
+          return !!pair && ~pair.indexOf('=');
+        }).map(function (pair) {
+          return pair.split('=');
+        }).reduce(function (aggregated) {
+          var current = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-        try {
-          for (var _iterator = urlSearch[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var pair = _step.value;
-
-            searchParams[pair[0]] = pair[1];
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
+          aggregated[current[0]] = current[1];
+          return aggregated;
+        }, searchParams);
       }
       return searchParams;
     }
@@ -244,7 +230,7 @@ var ReactQueryParams = function (_Component) {
       });
 
       var search = "?" + Object.keys(nextQueryParams).map(function (key) {
-        return key + "=" + nextQueryParams[key];
+        return key + "=" + encodeURIComponent(nextQueryParams[key]);
       }).join("&");
 
       if (addHistory) {
