@@ -209,7 +209,7 @@ export default class ReactQueryParams extends Component {
     const search =
       "?" +
       Object.keys(nextQueryParams)
-        .map(key => `${key}=${nextQueryParams[key]}`)
+        .map(key => `${key}=${encodeURIComponent(nextQueryParams[key])}`)
         .join("&");
 
     if (addHistory) {
