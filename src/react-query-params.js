@@ -110,7 +110,7 @@ export default class ReactQueryParams extends Component {
         (startsWith(value, "{") && endsWith(value, "}")))
     ) {
       try {
-        result = JSON.parse(value);
+        result = JSON.parse(decodeURIComponent(value));
       } catch (ex) {
         console.error(ex);
         // Can't parse so fall back to verbatim value
