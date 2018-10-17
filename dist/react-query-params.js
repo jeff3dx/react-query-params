@@ -137,7 +137,7 @@ var ReactQueryParams = function (_Component) {
       var result = value;
       if (typeof value === "string" && (startsWith(value, "[") && endsWith(value, "]") || startsWith(value, "{") && endsWith(value, "}"))) {
         try {
-          result = JSON.parse(value);
+          result = JSON.parse(decodeURIComponent(value));
         } catch (ex) {
           console.error(ex);
           // Can't parse so fall back to verbatim value
@@ -230,7 +230,7 @@ var ReactQueryParams = function (_Component) {
       });
 
       var search = "?" + Object.keys(nextQueryParams).map(function (key) {
-        return key + "=" + encodeURIComponent(nextQueryParams[key]);
+        return key + "=" + nextQueryParams[key];
       }).join("&");
 
       if (addHistory) {
