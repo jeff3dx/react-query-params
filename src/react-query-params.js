@@ -110,7 +110,7 @@ export default class ReactQueryParams extends Component {
         (startsWith(value, "{") && endsWith(value, "}")))
     ) {
       try {
-        result = JSON.parse(value);
+        result = JSON.parse(decodeURIComponent(value));
       } catch (ex) {
         console.error(ex);
         // Can't parse so fall back to verbatim value
@@ -209,7 +209,7 @@ export default class ReactQueryParams extends Component {
     const search =
       "?" +
       Object.keys(nextQueryParams)
-        .map(key => `${key}=${encodeURIComponent(nextQueryParams[key])}`)
+        .map(key => `${key}=${nextQueryParams[key]}`)
         .join("&");
 
     if (addHistory) {
