@@ -1,4 +1,4 @@
-# React Query Params
+# React Query Params [![react-query-params on npm](https://badge.fury.io/js/react-query-params.svg)](https://www.npmjs.com/package/react-query-params)
 Easy to use query param support for React.
 
 Plays super nice with React:
