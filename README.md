@@ -1,3 +1,11 @@
+# Thanks
+
+August, 2020:
+
+Thanks you for all the great feedback. react-query-params served its purpose as a React class extension, providing access to query params with the semantics of setState(). However, we're moving on to the new paradigm of React Hooks. **Since react-query-params doesn't fit in the Hooks paradigm it will no longer be maintained.** If you still find it useful please fork it and use it as you see fit. In the near future I may develop a Hooks version of the library and include some new features such as support for localStorage. 
+
+---
+
 # React Query Params [![react-query-params on npm](https://badge.fury.io/js/react-query-params.svg)](https://www.npmjs.com/package/react-query-params)
 Easy to use query param support for React.
 
