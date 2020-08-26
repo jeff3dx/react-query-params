@@ -213,9 +213,9 @@ export default class ReactQueryParams extends Component {
         .join("&");
 
     if (addHistory) {
-      this.history.push({ pathname: window.location.pathname, search });
+      this.history.push({ pathname: window.location.pathname, hash: window.location.hash, search });
     } else {
-      this.history.replace({ pathname: window.location.pathname, search });
+      this.history.replace({ pathname: window.location.pathname, hash: window.location.hash, search });
     }
 
     // Clear the cache
